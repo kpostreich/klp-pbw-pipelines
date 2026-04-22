@@ -31,11 +31,16 @@ pipeline {
                 echo '========================================='
                 echo 'Stage 2: Checkout Source Code'
                 echo '========================================='
-                git branch: 'main',
-                    url: 'https://github.com/IBMTechSales/liberty_admin_pot_src.git'
+                //git branch: 'main',
+                //    url: 'https://github.com/IBMTechSales/liberty_admin_pot_src.git'
                 
-                sh 'ls -la'
-                sh 'echo "Source code checked out successfully"'
+                //sh 'ls -la'
+                //sh 'echo "Source code checked out successfully"'
+
+                // Jenkins SCM automatically checks out the repository
+               // No explicit git command needed
+               echo "Checked out from SCM: ${env.GIT_URL}"
+               echo "Branch: ${env.GIT_BRANCH}"
             }
         }
         
