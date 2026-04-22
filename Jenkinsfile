@@ -69,7 +69,7 @@ pipeline {
                 echo 'Stage 5: Package Application'
                 echo '========================================='
                 sh '''
-                    ${MAVEN_BIN} package -DskipTests -Dliberty.runtime.version=${LIBERTY_VERSION}
+                    ${MAVEN_BIN} install -DskipTests -Dliberty.runtime.version=${LIBERTY_VERSION}
                 '''
             }
         }
