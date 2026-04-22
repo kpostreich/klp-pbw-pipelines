@@ -66,15 +66,17 @@ pipeline {
         stage('Package Application') {
             steps {
                 echo '========================================='
-                echo 'Stage 5: Package and Install Application Modules'
+                echo 'Stage 5: Package and Install All Application Artifacts'
                 echo '========================================='
                 sh '''
-                    # Build and install the EAR and its dependencies
-                    ${MAVEN_BIN} install -DskipTests -Dliberty.runtime.version=${LIBERTY_VERSION} -pl plantsbywebsphere-ear --also-make
+                    # Build and install ALL modules to local Maven repository
+                    # This ensures all dependencies are available
+                    ${MAVEN_BIN} clean install -DskipTests -Dliberty.runtime.version=${LIBERTY_VERSION}
                     
-                    # Verify EAR was installed
-                    echo "Checking if EAR was installed to Maven repository..."
-                    ls -la ~/.m2/repository/com/ibm/websphere/samples/plantsbywebsphere-ear/1.0-SNAPSHOT/ || echo "EAR not found in local repo!"
+                    # Verify artifacts were installed
+                    echo "Verifying artifacts in Maven repository..."
+                    ls -la ~/.m2/repository/com/ibm/websphere/samples/plantsbywebsphere-ear/1.0-SNAPSHOT/ || echo "EAR not found!"
+                    ls -la ~/.m2/repository/com/ibm/websphere/samples/whereami/1.0-SNAPSHOT/ || echo "WhereAmI not found!"
                 '''
             }
         }
@@ -82,12 +84,17 @@ pipeline {
         stage('Create Liberty Server Package') {
             steps {
                 echo '========================================='
-                echo 'Stage 6: Build Liberty Server Package'
+                echo 'Stage 6: Verify Liberty Server Package Was Created'
                 echo '========================================='
-                echo 'Building liberty-server module which depends on the EAR'
                 sh '''
-                    # Build only the liberty-server module
-                    ${MAVEN_BIN} install -Dliberty.runtime.version=${LIBERTY_VERSION} -pl liberty-server
+                    # The liberty server package should have been created in Stage 5
+                    # Just verify it exists
+                    echo "Checking for Liberty server package..."
+                    ls -la liberty-server/target/*.zip
+                    
+                    # Show package details
+                    echo "Liberty server package details:"
+                    ls -lh liberty-server/target/*.zip
                 '''
             }
         }
