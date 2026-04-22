@@ -65,7 +65,7 @@ pipeline {
                 echo '========================================='
                 echo 'Stage 4: Run Unit Tests'
                 echo '========================================='
-                sh 'mvn test -Dliberty.runtime.version=${LIBERTY_VERSION}'
+                sh /home/techzone/Documents/apache-maven-3.9.5-bin/apache-maven-3.9.5/bin/mvn test -Dliberty.runtime.version=${LIBERTY_VERSION}'
             }
             post {
                 always {
@@ -81,7 +81,7 @@ pipeline {
                 echo 'Stage 5: Package Application'
                 echo '========================================='
                 sh """
-                    mvn package -DskipTests -Dliberty.runtime.version=${LIBERTY_VERSION}
+                   /home/techzone/Documents/apache-maven-3.9.5-bin/apache-maven-3.9.5/bin/mvn  package -DskipTests -Dliberty.runtime.version=${LIBERTY_VERSION}
                     
                     echo "Listing build artifacts:"
                     ls -lh plantsbywebsphere-util/target/*.jar || true
@@ -98,7 +98,7 @@ pipeline {
                 echo 'Stage 6: Create Liberty Server Package'
                 echo '========================================='
                 sh """
-                    mvn install -DskipTests -Dliberty.runtime.version=${LIBERTY_VERSION}
+                    /home/techzone/Documents/apache-maven-3.9.5-bin/apache-maven-3.9.5/bin/mvn install -DskipTests -Dliberty.runtime.version=${LIBERTY_VERSION}
                     
                     echo "Server package created:"
                     ls -lh ${SERVER_PACKAGE}
