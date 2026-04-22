@@ -70,13 +70,11 @@ pipeline {
                 echo '========================================='
                 sh '''
                     # Build and install ALL modules to local Maven repository
-                    # This ensures all dependencies are available
+                    # This ensures all dependencies are available for liberty-server
+                    echo "Starting Maven build..."
                     ${MAVEN_BIN} clean install -DskipTests -Dliberty.runtime.version=${LIBERTY_VERSION}
                     
-                    # Verify artifacts were installed
-                    echo "Verifying artifacts in Maven repository..."
-                    ls -la ~/.m2/repository/com/ibm/websphere/samples/plantsbywebsphere-ear/1.0-SNAPSHOT/ || echo "EAR not found!"
-                    ls -la ~/.m2/repository/com/ibm/websphere/samples/whereami/1.0-SNAPSHOT/ || echo "WhereAmI not found!"
+                    echo "Build completed successfully!"
                 '''
             }
         }
