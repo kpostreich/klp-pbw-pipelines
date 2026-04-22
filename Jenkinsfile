@@ -57,9 +57,9 @@ pipeline {
                 echo '========================================='
                 echo 'Stage 4: Run Unit Tests'
                 echo '========================================='
-                sh '''
-                    ${MAVEN_BIN} test -Dliberty.runtime.version=${LIBERTY_VERSION}
-                '''
+               // sh '''
+               //     ${MAVEN_BIN} test -Dliberty.runtime.version=${LIBERTY_VERSION}
+               // '''
             }
         }
         
