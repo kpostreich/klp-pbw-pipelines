@@ -54,7 +54,8 @@ pipeline {
                     echo "Java Home: ${JAVA_HOME}"
                     echo "Liberty Version: ${LIBERTY_VERSION}"
                     
-                    mvn clean compile -Dliberty.runtime.version=${LIBERTY_VERSION}
+                    //mvn clean compile -Dliberty.runtime.version=${LIBERTY_VERSION}
+                    /home/techzone/Documents/apache-maven-3.9.5-bin/apache-maven-3.9.5/bin/mvn clean compile -Dliberty.runtime.version=${LIBERTY_VERSION}
                 """
             }
         }
