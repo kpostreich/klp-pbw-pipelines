@@ -24,10 +24,12 @@ pipeline {
                 echo '========================================='
                 echo 'Stage 2: Checkout Source Code'
                 echo '========================================='
-                // Jenkins SCM automatically checks out the repository
-                // No explicit git command needed
-                echo "Checked out from SCM: ${env.GIT_URL}"
+                // Explicitly checkout the repository
+                checkout scm
+                echo "Checked out from: ${env.GIT_URL}"
                 echo "Branch: ${env.GIT_BRANCH}"
+                sh 'ls -la'
+                sh 'ls -la pom.xml || echo "pom.xml not found!"'
             }
         }
         
@@ -37,9 +39,14 @@ pipeline {
                 echo 'Stage 3: Build Application with Maven'
                 echo '========================================='
                 sh '''
+                    echo "Working Directory: $(pwd)"
                     echo "Maven Binary: ${MAVEN_BIN}"
                     echo "Java Home: ${JAVA_HOME}"
                     echo "Liberty Version: ${LIBERTY_VERSION}"
+                    echo "Listing workspace contents:"
+                    ls -la
+                    echo "Checking for pom.xml:"
+                    ls -la pom.xml
                     ${MAVEN_BIN} clean compile -Dliberty.runtime.version=${LIBERTY_VERSION}
                 '''
             }
@@ -72,10 +79,11 @@ pipeline {
                 echo '========================================='
                 echo 'Stage 6: Create Liberty Server Package'
                 echo '========================================='
-                sh '''
-                    cd liberty-server
-                    ${MAVEN_BIN} liberty:create liberty:install-feature liberty:deploy liberty:package -Dliberty.runtime.version=${LIBERTY_VERSION}
-                '''
+                dir('liberty-server') {
+                    sh '''
+                        ${MAVEN_BIN} liberty:create liberty:install-feature liberty:deploy liberty:package -Dliberty.runtime.version=${LIBERTY_VERSION}
+                    '''
+                }
             }
         }
         
@@ -115,6 +123,8 @@ pipeline {
         success {
             echo '========================================='
             echo 'Pipeline completed successfully!'
+            echo 'Application deployed to Liberty Server'
+            echo 'Access at: http://localhost:9080/plantsbywebsphere'
             echo '========================================='
         }
         failure {
