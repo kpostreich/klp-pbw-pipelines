@@ -69,8 +69,12 @@ pipeline {
                 echo 'Stage 5: Package and Install Application Modules'
                 echo '========================================='
                 sh '''
-                    # Build and install all modules EXCEPT liberty-server
-                    ${MAVEN_BIN} install -DskipTests -Dliberty.runtime.version=${LIBERTY_VERSION} -pl '!liberty-server'
+                    # Build and install the EAR and its dependencies
+                    ${MAVEN_BIN} install -DskipTests -Dliberty.runtime.version=${LIBERTY_VERSION} -pl plantsbywebsphere-ear --also-make
+                    
+                    # Verify EAR was installed
+                    echo "Checking if EAR was installed to Maven repository..."
+                    ls -la ~/.m2/repository/com/ibm/websphere/samples/plantsbywebsphere-ear/1.0-SNAPSHOT/ || echo "EAR not found in local repo!"
                 '''
             }
         }
@@ -80,12 +84,11 @@ pipeline {
                 echo '========================================='
                 echo 'Stage 6: Build Liberty Server Package'
                 echo '========================================='
-                echo 'Now that all dependencies are installed, build the liberty-server module'
-                dir('liberty-server') {
-                    sh '''
-                        ${MAVEN_BIN} clean install -Dliberty.runtime.version=${LIBERTY_VERSION}
-                    '''
-                }
+                echo 'Building liberty-server module which depends on the EAR'
+                sh '''
+                    # Build only the liberty-server module
+                    ${MAVEN_BIN} install -Dliberty.runtime.version=${LIBERTY_VERSION} -pl liberty-server
+                '''
             }
         }
         
