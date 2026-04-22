@@ -47,7 +47,7 @@ pipeline {
                     ls -la
                     echo "Checking for pom.xml:"
                     ls -la pom.xml
-                    ${MAVEN_BIN} clean compile -Dliberty.runtime.version=${LIBERTY_VERSION}
+                    ${MAVEN_BIN} clean install -Dliberty.runtime.version=${LIBERTY_VERSION}
                 '''
             }
         }
